@@ -1,11 +1,9 @@
-#include <cmath>
 #include <cstdlib>
 #include <iostream>
 #include <ostream>
 #include <string>
 #include <unistd.h>
-#include <vector>
-#include "lexical.h"
+#include "semantic.h"
 #include "syntactic.h"
 
 int main(int argc, char *argv[]){
@@ -20,6 +18,8 @@ int main(int argc, char *argv[]){
     if(analyser->errors > 0){
         std::cerr << "Reported " << analyser->errors << " syntactic errors" << std::endl;
     }
+
+    print_semantic_id_list(&(analyser->s_analyser));
 
     //print_lexical_analyser(&analyser->lexical_analyser_results);
     free(analyser);

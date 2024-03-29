@@ -4,8 +4,10 @@
 #include <string>
 #include <vector>
 #include "lexical.h"
+#include "semantic.h"
 
 struct syntactic{
+    struct semantic s_analyser;
     std::vector<lexical> lexical_analyser_results;
     unsigned int position;
     unsigned int errors = 0;
