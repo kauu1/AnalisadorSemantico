@@ -16,3 +16,11 @@ struct semantic{
 };
 
 void print_semantic_id_list(struct semantic *s);
+
+void push_identifier(struct semantic *s, std::string id_name, std::string type, int scope);
+
+int check_id(struct semantic *s, struct identifier id);
+
+void erase_marks(struct semantic *s);
+
+void set_types(struct semantic *s, std::string type);

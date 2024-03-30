@@ -280,17 +280,10 @@ void parameter_list2(struct syntactic* synt){
         next(synt);
 
         if(in_array(synt->lexical_analyser_results[synt->position].token, types)){
-            int i_position = synt->s_analyser.identifier_list.size() - 1;
 
-            synt->s_analyser.current_identifier.name = "type";
-            synt->s_analyser.current_identifier.scope = synt->s_analyser.scope;
-            synt->s_analyser.identifier_list.push_back(synt->s_analyser.current_identifier);
+            push_identifier(&(synt->s_analyser), "&", "\0", synt->s_analyser.scope);
 
-            while(synt->s_analyser.identifier_list[i_position].name.find("type") == std::string::npos){
-
-                synt->s_analyser.identifier_list[i_position].i_type = synt->lexical_analyser_results[synt->position].token;
-                i_position--;
-            }
+            set_types(&(synt->s_analyser),synt->lexical_analyser_results[synt->position].token );
 
         }else {
             synt->errors++;
@@ -317,18 +310,10 @@ void parameter_list(struct syntactic* synt){
 
     next(synt);
     if(in_array(synt->lexical_analyser_results[synt->position].token, types)){
-        int i_position = synt->s_analyser.identifier_list.size() - 1;
 
-        synt->s_analyser.current_identifier.name = "type";
-        synt->s_analyser.current_identifier.i_type = "\0";
-        synt->s_analyser.current_identifier.scope = synt->s_analyser.scope;
-        synt->s_analyser.identifier_list.push_back(synt->s_analyser.current_identifier);
+        push_identifier(&(synt->s_analyser), "&", "\0", synt->s_analyser.scope);
 
-        while(synt->s_analyser.identifier_list[i_position].i_type.find("procedure") == std::string::npos){
-           
-            synt->s_analyser.identifier_list[i_position].i_type = synt->lexical_analyser_results[synt->position].token;
-            i_position--;
-        }
+        set_types(&(synt->s_analyser),synt->lexical_analyser_results[synt->position].token );
 
     }else {
         synt->errors++;
@@ -351,15 +336,7 @@ void arguments(struct syntactic* synt){
             std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \")\"\n";
         }
 
-        int i_position = synt->s_analyser.identifier_list.size() - 1;
-
-        while(synt->s_analyser.identifier_list[i_position].i_type.find("procedure") == std::string::npos){
-
-            if(synt->s_analyser.identifier_list[i_position].name.find("type") != std::string::npos){
-                synt->s_analyser.identifier_list.erase(synt->s_analyser.identifier_list.begin()+i_position);
-            }
-            i_position--;
-        }
+        erase_marks(&(synt->s_analyser));
         
         next(synt);
     }   
@@ -372,11 +349,7 @@ void subprogram_declaration(struct syntactic *synt){
 
         if(synt->lexical_analyser_results[synt->position].type == Identifier){
 
-            synt->s_analyser.current_identifier.name = synt->lexical_analyser_results[synt->position].token;
-            synt->s_analyser.current_identifier.i_type = "procedure";
-            synt->s_analyser.current_identifier.scope = synt->s_analyser.scope;
-
-            synt->s_analyser.identifier_list.push_back(synt->s_analyser.current_identifier);
+            push_identifier(&(synt->s_analyser), synt->lexical_analyser_results[synt->position].token, "procedure", synt->s_analyser.scope-1);
 
             next(synt);
         }else {
@@ -428,10 +401,7 @@ void identifier_list2(struct syntactic* synt){
 
         if(synt->lexical_analyser_results[synt->position].type == Identifier){
             
-            synt->s_analyser.current_identifier.name = synt->lexical_analyser_results[synt->position].token;
-            synt->s_analyser.current_identifier.scope = synt->s_analyser.scope;
-            synt->s_analyser.current_identifier.i_type = "\0";
-            synt->s_analyser.identifier_list.push_back(synt->s_analyser.current_identifier);
+            push_identifier(&(synt->s_analyser), synt->lexical_analyser_results[synt->position].token, "\0", synt->s_analyser.scope);
 
             next(synt);
 
@@ -449,10 +419,7 @@ void identifier_list(struct syntactic* synt){
     //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### program" << std::endl;
     if(synt->lexical_analyser_results[synt->position].type == Identifier){
 
-        synt->s_analyser.current_identifier.name = synt->lexical_analyser_results[synt->position].token;
-        synt->s_analyser.current_identifier.i_type = "\0";
-        synt->s_analyser.current_identifier.scope = synt->s_analyser.scope;
-        synt->s_analyser.identifier_list.push_back(synt->s_analyser.current_identifier);
+        push_identifier(&(synt->s_analyser), synt->lexical_analyser_results[synt->position].token, "\0", synt->s_analyser.scope);
 
         next(synt);
 
@@ -479,20 +446,11 @@ void variable_declaration_list(struct syntactic *synt){
 
     if(in_array(synt->lexical_analyser_results[synt->position].token, types)){
         
-        int i_position = synt->s_analyser.identifier_list.size() - 1;
 
-        synt->s_analyser.current_identifier.name = "type";
-        synt->s_analyser.current_identifier.scope = synt->s_analyser.scope;
-        synt->s_analyser.identifier_list.push_back(synt->s_analyser.current_identifier);
+        push_identifier(&(synt->s_analyser), "&", "\0", synt->s_analyser.scope);
+        
 
-        while(!(synt->s_analyser.identifier_list[i_position].name.find("var") != std::string::npos) &&
-        !(synt->s_analyser.identifier_list[i_position].name.find("type") != std::string::npos)){
-
-            synt->s_analyser.identifier_list[i_position].i_type = synt->lexical_analyser_results[synt->position].token;
-            i_position--;
-        }
-
-        synt->s_analyser.identifier_list.erase(synt->s_analyser.identifier_list.begin()+i_position);
+        set_types(&(synt->s_analyser), synt->lexical_analyser_results[synt->position].token);
 
         next(synt);
         
@@ -517,13 +475,11 @@ void variable_declaration_list(struct syntactic *synt){
 void variable_declaration(struct syntactic *synt){ 
     if(synt->lexical_analyser_results[synt->position].token.find("var") != std::string::npos){
         
-        synt->s_analyser.current_identifier.name = synt->lexical_analyser_results[synt->position].token;
-        synt->s_analyser.current_identifier.scope = synt->s_analyser.scope;
-        synt->s_analyser.identifier_list.push_back(synt->s_analyser.current_identifier);
+        push_identifier(&(synt->s_analyser), "&", "\0", synt->s_analyser.scope);
 
         next(synt);
         variable_declaration_list(synt);
-        synt->s_analyser.identifier_list.pop_back();
+        erase_marks(&(synt->s_analyser));
     }
 }
 
@@ -537,10 +493,7 @@ void program(struct syntactic *synt){
 
     if(synt->lexical_analyser_results[synt->position].type == Identifier){
 
-        synt->s_analyser.current_identifier.name = synt->lexical_analyser_results[synt->position].token;
-        synt->s_analyser.current_identifier.i_type = "program";
-        synt->s_analyser.current_identifier.scope = synt->s_analyser.scope;
-        synt->s_analyser.identifier_list.push_back(synt->s_analyser.current_identifier);
+        push_identifier(&(synt->s_analyser), synt->lexical_analyser_results[synt->position].token, "program", 0);
 
         next(synt);
     }else {
