@@ -21,7 +21,8 @@ int main(int argc, char *argv[]){
 
     print_semantic_id_list(&(analyser->s_analyser));
 
-    //print_lexical_analyser(&analyser->lexical_analyser_results);
+    std::cout << std::endl << "expression list -------------" << std::endl;
+    print_semantic_ex_list(&(analyser->s_analyser));
     free(analyser);
     
 }
