@@ -19,10 +19,10 @@ int main(int argc, char *argv[]){
         std::cerr << "Reported " << analyser->errors << " syntactic errors" << std::endl;
     }
 
-    print_semantic_id_list(&(analyser->s_analyser));
+   // print_semantic_id_list(&(analyser->s_analyser));
 
-    std::cout << std::endl << "expression list -------------" << std::endl;
-    print_semantic_ex_list(&(analyser->s_analyser));
+    //std::cout << std::endl << "expression list -------------" << std::endl;
+    //print_semantic_ex_list(&(analyser->s_analyser));
     free(analyser);
     
 }

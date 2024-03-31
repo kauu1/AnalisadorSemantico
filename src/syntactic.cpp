@@ -144,7 +144,17 @@ void expression(struct syntactic* synt){
     if(synt->lexical_analyser_results[synt->position].type == Relational_operator){
         next(synt);
         simple_expression(synt);
+        update_ex_list(&(synt->s_analyser));
+        if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
+            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
+        }
     }
+
+    update_ex_list(&(synt->s_analyser));
+    if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
+        std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
+    }
+
     
 }
 
@@ -194,10 +204,6 @@ void command(struct syntactic* synt){
             next(synt);
             expression(synt);
 
-            update_ex_list(&(synt->s_analyser));
-            if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
-                std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
-            }
         }
         else if (synt->lexical_analyser_results[synt->position].token.find("=") != std::string::npos){
             push_expression_list(&(synt->s_analyser), synt->s_analyser.current_identifier.name);

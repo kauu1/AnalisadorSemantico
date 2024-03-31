@@ -24,7 +24,8 @@ int check_id(struct semantic *s, struct identifier id){
 
     for(size_t i = 0; i < s->identifier_list.size(); i++){
         
-        if(s->identifier_list[i].name.find(id.name) != std::string::npos && s->identifier_list[i].scope == id.scope){
+        if(s->identifier_list[i].name == id.name && s->identifier_list[i].scope == id.scope){
+            
             if(i == 0){
                 std::cerr << "ERRO: program name can not be used" << std::endl;
             }
@@ -43,7 +44,7 @@ int check_id_procedure(struct semantic *s, struct identifier id){
 
     for(size_t i = 0; i < s->identifier_list.size(); i++){
         
-        if(s->identifier_list[i].name.find(id.name) != std::string::npos && s->identifier_list[i].scope == id.scope && s->identifier_list[i].i_type == "procedure"){
+        if(s->identifier_list[i].name == id.name && s->identifier_list[i].scope == id.scope && s->identifier_list[i].i_type == "procedure"){
             return 1;
         }
 
@@ -56,7 +57,6 @@ void push_identifier_list(struct semantic *s, std::string id_name, std::string t
     s->current_identifier.name = id_name;
     s->current_identifier.i_type = type;
     s->current_identifier.scope = scope;
-
     if(check_id(s, s->current_identifier)){
         std::cerr << "ERRO: identifier " << s->current_identifier.name << " already declared" << std::endl;
         return;
@@ -93,7 +93,7 @@ std::string get_id_type(struct semantic *s, std::string id_name){
     for(size_t i = 0; i < s->identifier_list.size(); i++){
         
         if(s->identifier_list[i].name.find(id_name) != std::string::npos){
-            std::cout << "name: " << s->identifier_list[i].name << std::endl;
+            //std::cout << "name: " << s->identifier_list[i].name << std::endl;
             return s->identifier_list[i].i_type;
         }
 
@@ -143,6 +143,7 @@ void update_ex_list(struct semantic *s){
 
         }else{
             std::cerr << "ERRO: incompatible types" << std::endl;
+            break;
         }
     }
 }
