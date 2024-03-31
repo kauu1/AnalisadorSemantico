@@ -132,6 +132,7 @@ void simple_expression(struct syntactic* synt){
         simple_expression2(synt);
     }
 
+    update_ex_list(&(synt->s_analyser));
     
 
 }
@@ -192,6 +193,11 @@ void command(struct syntactic* synt){
             push_expression_list(&(synt->s_analyser), synt->s_analyser.current_identifier.name);
             next(synt);
             expression(synt);
+
+            update_ex_list(&(synt->s_analyser));
+            if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
+                std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
+            }
         }
         else if (synt->lexical_analyser_results[synt->position].token.find("=") != std::string::npos){
             push_expression_list(&(synt->s_analyser), synt->s_analyser.current_identifier.name);
@@ -199,6 +205,8 @@ void command(struct syntactic* synt){
             synt->errors++;
             std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \":\" before \"=\"\n";
             expression(synt);
+
+
 
         }else if(synt->lexical_analyser_results[synt->position].token.find("(") != std::string::npos){
 

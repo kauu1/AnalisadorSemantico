@@ -32,6 +32,10 @@ int check_id_procedure(struct semantic *s, struct identifier id);
 
 void update_ex_list(struct semantic *s);
 
+void update_ex_list_last(struct semantic *s, std::string resultType);
+
+int check_and_clean_types_remaining(struct semantic *s);
+
 void erase_marks(struct semantic *s);
 
 void erase_scope(struct semantic *s);

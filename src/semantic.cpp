@@ -111,6 +111,64 @@ void erase_scope(struct semantic *s){
     s->scope--;
 }
 
-void update_ex_list(struct semantic *s){
-
+void update_ex_list_last(struct semantic *s, std::string resultType){
+    if(s->id_expression.size() > 2){
+        s->id_expression.pop_back();
+        s->id_expression.pop_back();
+        s->id_expression.push_back(resultType);
+    }
 }
+
+void update_ex_list(struct semantic *s){
+    while(s->id_expression.size() > 2){
+
+        if(s->id_expression[s->id_expression.size()-1].find("integer") != std::string::npos &&
+        s->id_expression[s->id_expression.size()-2].find("integer") != std::string::npos){
+            update_ex_list_last(s, "integer");
+
+        }else if(s->id_expression[s->id_expression.size()-1].find("real") != std::string::npos &&
+        s->id_expression[s->id_expression.size()-2].find("real") != std::string::npos){
+            update_ex_list_last(s, "real");
+
+        }else if(s->id_expression[s->id_expression.size()-1].find("integer") != std::string::npos &&
+        s->id_expression[s->id_expression.size()-2].find("real") != std::string::npos){
+            update_ex_list_last(s, "real");
+
+        }else if(s->id_expression[s->id_expression.size()-1].find("real") != std::string::npos &&
+        s->id_expression[s->id_expression.size()-2].find("integer") != std::string::npos){
+            update_ex_list_last(s, "real");
+
+        }else if(s->id_expression[s->id_expression.size()-1] == s->id_expression[s->id_expression.size()-2]){
+            update_ex_list_last(s, s->id_expression[s->id_expression.size()-1]);
+
+        }else{
+            std::cerr << "ERRO: incompatible types" << std::endl;
+        }
+    }
+}
+
+int check_and_clean_types_remaining(struct semantic *s){
+    if(s->id_expression.size() < 2){
+        s->id_expression.clear();
+        return 1;
+    }
+
+    if(s->id_expression[0] == s->id_expression[1]){
+        s->id_expression.clear();
+        return 1;
+    }
+
+    if(s->id_expression[0] == "real" && s->id_expression[1] == "integer"){
+        s->id_expression.clear();
+        return 1;
+    }
+
+    if(s->id_expression[0] == "integer" && s->id_expression[1] == "real"){
+        s->id_expression.clear();
+        return 0;
+    }
+
+    s->id_expression.clear();
+    return 0;
+}
+
