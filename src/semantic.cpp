@@ -92,7 +92,7 @@ void erase_marks(struct semantic *s){
 std::string get_id_type(struct semantic *s, std::string id_name){
     for(size_t i = 0; i < s->identifier_list.size(); i++){
         
-        if(s->identifier_list[i].name.find(id_name) != std::string::npos){
+        if(s->identifier_list[i].name == id_name){
             //std::cout << "name: " << s->identifier_list[i].name << std::endl;
             return s->identifier_list[i].i_type;
         }

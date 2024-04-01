@@ -21,7 +21,7 @@ var			{Existem diversos erros que podem ser gerados neste arquivo. Alguns exempl
      resultado := 0;
       
      {LimparTela; adicione este procedimento}
-      while (entrada>0) do {no lugar de "entrada" use "input" e veja se gera o erro "variável não declarada" }
+      while (input>0) do {no lugar de "entrada" use "input" e veja se gera o erro "variável não declarada" }
       resultado := resultado + entrada;
       entrada := entrada - 1;		{troque "1" por "chave" e veja se gera o erro "tipos incompatíveis"}	
      

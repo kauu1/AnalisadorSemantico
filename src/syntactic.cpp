@@ -33,8 +33,11 @@ void next(struct syntactic* synt){
 }
 
 void factor(struct syntactic* synt){
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### factor" << std::endl;
-    if(synt->lexical_analyser_results[synt->position].type == Identifier){
+    
+    if(synt->lexical_analyser_results[synt->position].token == "true"){
+        push_expression_list(&(synt->s_analyser), "boolean");
+        next(synt);
+    }else if(synt->lexical_analyser_results[synt->position].type == Identifier){
 
         synt->s_analyser.current_identifier.name = synt->lexical_analyser_results[synt->position].token;
         synt->s_analyser.current_identifier.scope = synt->s_analyser.scope;
@@ -95,7 +98,6 @@ void factor(struct syntactic* synt){
 }
 
 void term(struct syntactic* synt){
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### term" << std::endl;
     factor(synt);
 
     if(synt->lexical_analyser_results[synt->position].type == Multiplicative_operator){
@@ -109,7 +111,7 @@ void simple_expression2(struct syntactic* synt){
         synt->s_analyser.current_identifier.name = synt->lexical_analyser_results[synt->position].token;
         push_expression_list(&(synt->s_analyser), synt->s_analyser.current_identifier.name);
     }
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### simple_expression2" << std::endl;
+
     if(synt->lexical_analyser_results[synt->position].type == Aditive_operator){
         next(synt);
         term(synt);
@@ -141,25 +143,24 @@ void expression(struct syntactic* synt){
 
     simple_expression(synt);
 
+    update_ex_list(&(synt->s_analyser));
+
     if(synt->lexical_analyser_results[synt->position].type == Relational_operator){
         next(synt);
         simple_expression(synt);
         update_ex_list(&(synt->s_analyser));
-        if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
-            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
-        }
-    }
-
-    update_ex_list(&(synt->s_analyser));
-    if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
+        synt->s_analyser.id_expression.pop_back();
+        synt->s_analyser.id_expression.pop_back();
+        synt->s_analyser.id_expression.push_back("boolean");
+        
+    }else if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
         std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
     }
-
     
 }
 
 void expression_list2(struct syntactic* synt){
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### expression_list2" << std::endl;
+
     if(synt->lexical_analyser_results[synt->position].token.find(",") != std::string::npos){
         next(synt);
         expression(synt);
@@ -174,7 +175,7 @@ void expression_list2(struct syntactic* synt){
 }
 
 void expression_list(struct syntactic* synt){
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### expression_list" << std::endl;
+
     if(synt->lexical_analyser_results[synt->position].token.find(")") != std::string::npos){
         next(synt);
         return;
@@ -185,7 +186,6 @@ void expression_list(struct syntactic* synt){
 }
 
 void command(struct syntactic* synt){
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### command" << std::endl;
     
     if(synt->lexical_analyser_results[synt->position].type == Identifier){
 
@@ -242,6 +242,10 @@ void command(struct syntactic* synt){
         next(synt);
         expression(synt);
 
+        if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
+            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
+        }
+
         if(synt->lexical_analyser_results[synt->position].token.find("then") != std::string::npos){
             next(synt);
         }else {
@@ -262,6 +266,10 @@ void command(struct syntactic* synt){
         next(synt);
         expression(synt);
 
+        if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
+            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
+        }
+
         if(synt->lexical_analyser_results[synt->position].token.find("do") != std::string::npos){}
         else{
             synt->errors++;
@@ -274,7 +282,7 @@ void command(struct syntactic* synt){
 }
 
 void command_list2(struct syntactic* synt){
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### command_list2" << std::endl;
+
     if(synt->lexical_analyser_results[synt->position].token.find("end") != std::string::npos){
         return;
     }
@@ -285,7 +293,7 @@ void command_list2(struct syntactic* synt){
 }
 
 void command_list(struct syntactic* synt){
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### command_list" << std::endl;
+
     command(synt);
 
     if(synt->lexical_analyser_results[synt->position].token.find("end") != std::string::npos){
@@ -296,7 +304,7 @@ void command_list(struct syntactic* synt){
 }
 
 void compost_command(struct syntactic* synt){
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### compost_command" << std::endl;
+
     if(synt->lexical_analyser_results[synt->position].token.find("begin") != std::string::npos){
         next(synt);
     }
@@ -321,7 +329,7 @@ void compost_command(struct syntactic* synt){
 }
 
 void parameter_list2(struct syntactic* synt){
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### program" << std::endl;
+
     if(synt->lexical_analyser_results[synt->position].token.find(",") != std::string::npos){
 
         next(synt);
@@ -353,7 +361,7 @@ void parameter_list2(struct syntactic* synt){
 }
 
 void parameter_list(struct syntactic* synt){
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### program" << std::endl;
+
     identifier_list(synt);
 
     if(synt->lexical_analyser_results[synt->position].token.find(":") != std::string::npos){
@@ -381,7 +389,7 @@ void parameter_list(struct syntactic* synt){
 }
 
 void arguments(struct syntactic* synt){
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### program" << std::endl;
+
     if(synt->lexical_analyser_results[synt->position].token.find("(") != std::string::npos){
         next(synt);
         parameter_list(synt);
@@ -450,8 +458,6 @@ void subprograms_declaration(struct syntactic *synt){
 }
 
 void identifier_list2(struct syntactic* synt){
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### program" << std::endl;
-
     if (synt->lexical_analyser_results[synt->position].token.find(",") != std::string::npos) {
 
         next(synt);
@@ -473,7 +479,6 @@ void identifier_list2(struct syntactic* synt){
 }
 
 void identifier_list(struct syntactic* synt){
-    //std::cout << synt->lexical_analyser_results[synt->position].token << ' ' << "### program" << std::endl;
     if(synt->lexical_analyser_results[synt->position].type == Identifier){
 
         push_identifier_list(&(synt->s_analyser), synt->lexical_analyser_results[synt->position].token, "\0", synt->s_analyser.scope);
