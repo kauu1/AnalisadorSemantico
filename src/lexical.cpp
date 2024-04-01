@@ -350,14 +350,14 @@ std::vector<struct lexical> lexical_analyser_ReGex(std::string file_path){
 
     //conjunto de regras regex indentificadoras
     std::vector<Pattern> rules = {
+        {Aditive_operator, std::regex("[+]|[-]|\\bor\\b")},//additive operators
+        {Multiplicative_operator, std::regex("[*]|[/]|\\band\\b")},//multiplicative operators
         {Words, std::regex("[a-zA-Z]\\w*")}, //words
         {Float, std::regex("\\d+[.]\\d*")}, //float
         {Integer, std::regex("\\d+")}, //integers
         {Atribution, std::regex(":=")}, //attribuition
         {Delimiter, std::regex(":(?!=)|[;]|[.]|[,]|[(]|[)]")}, //delimiters
         {Relational_operator, std::regex("(?![<|>])=|[<|>][=]|[<][>]|(?!<)>|[<]")}, //relational operators
-        {Aditive_operator, std::regex("[+]|[-]")}, //additive operators
-        {Multiplicative_operator, std::regex("[*]|[/]")} //multiplicative operators
     };
 
     //regras regex e variaveis para o tratamento de comentarios

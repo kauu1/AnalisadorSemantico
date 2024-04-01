@@ -100,6 +100,7 @@ void factor(struct syntactic* synt){
 void term(struct syntactic* synt){
     factor(synt);
 
+    std::cout << synt->lexical_analyser_results[synt->position].token;
     if(synt->lexical_analyser_results[synt->position].type == Multiplicative_operator){
         next(synt);
         term(synt);
