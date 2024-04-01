@@ -100,7 +100,6 @@ void factor(struct syntactic* synt){
 void term(struct syntactic* synt){
     factor(synt);
 
-    std::cout << synt->lexical_analyser_results[synt->position].token;
     if(synt->lexical_analyser_results[synt->position].type == Multiplicative_operator){
         next(synt);
         term(synt);
@@ -242,7 +241,9 @@ void command(struct syntactic* synt){
     if(synt->lexical_analyser_results[synt->position].token.find("if") != std::string::npos){
         next(synt);
         expression(synt);
-
+        if(synt->s_analyser.id_expression[0] != "boolean"){
+            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible type" << std::endl;
+        }
         if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
             std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
         }
@@ -267,6 +268,9 @@ void command(struct syntactic* synt){
         next(synt);
         expression(synt);
 
+        if(synt->s_analyser.id_expression[0] != "boolean"){
+            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible type" << std::endl;
+        }
         if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
             std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
         }
