@@ -34,7 +34,7 @@ void next(struct syntactic* synt){
 
 void factor(struct syntactic* synt){
     
-    if(synt->lexical_analyser_results[synt->position].token == "true"){
+    if(synt->lexical_analyser_results[synt->position].token == "true" || synt->lexical_analyser_results[synt->position].token == "false"){
         push_expression_list(&(synt->s_analyser), "boolean");
         next(synt);
     }else if(synt->lexical_analyser_results[synt->position].type == Identifier){
