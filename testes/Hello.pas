@@ -1,7 +1,7 @@
 program Hello;
-var a, v, u: integer;
+var a, v, u, y, z,c: integer;
 juda: real;
-b, d: boolean;
+x, b, d: boolean;
 
 procedure olask;
 begin end;
@@ -14,6 +14,7 @@ begin
     if(a < juda) then
         if a then
          a:= v;
+         x := (y + z * (5.5 - c) / 2.567) > 2; 
 
         if(not b) then
             a := 2.4 + v;

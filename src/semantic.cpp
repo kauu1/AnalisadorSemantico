@@ -24,7 +24,7 @@ int check_id(struct semantic *s, struct identifier id){
 
     for(size_t i = 0; i < s->identifier_list.size(); i++){
         
-        if(s->identifier_list[i].name == id.name && s->identifier_list[i].scope == id.scope){
+        if(s->identifier_list[i].name == id.name && (s->identifier_list[i].scope == id.scope || s->identifier_list[i].scope == 0)){
             
             if(i == 0){
                 std::cerr << "ERRO: program name can not be used" << std::endl;
@@ -44,7 +44,7 @@ int check_id_procedure(struct semantic *s, struct identifier id){
 
     for(size_t i = 0; i < s->identifier_list.size(); i++){
         
-        if(s->identifier_list[i].name == id.name && s->identifier_list[i].scope == id.scope && s->identifier_list[i].i_type == "procedure"){
+        if(s->identifier_list[i].name == id.name && (s->identifier_list[i].scope == id.scope || s->identifier_list[i].scope == 0) && s->identifier_list[i].i_type == "procedure"){
             return 1;
         }
 
@@ -90,7 +90,7 @@ void erase_marks(struct semantic *s){
 }
 
 std::string get_id_type(struct semantic *s, std::string id_name){
-    for(size_t i = 0; i < s->identifier_list.size(); i++){
+    for(size_t i = s->identifier_list.size() -1; i > 0; i--){
         
         if(s->identifier_list[i].name == id_name){
             //std::cout << "name: " << s->identifier_list[i].name << std::endl;

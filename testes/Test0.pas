@@ -6,6 +6,6 @@ var
 begin
     while (I <= 5) do
     begin
-        A := A+(4+5);
+        H := (B + R * (5.5 - I) / 2.567) > 2; 
     end
 end.
