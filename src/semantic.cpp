@@ -149,7 +149,7 @@ void update_ex_list(struct semantic *s){
         }else if(s->id_expression[s->id_expression.size()-1].find("integer") != std::string::npos &&
             s->id_expression[s->id_expression.size()-2].find("real") != std::string::npos){
             update_ex_list_last(s, "real");
-            
+
         }
         else if(s->id_expression[s->id_expression.size()-1] == s->id_expression[s->id_expression.size()-2]){
             update_ex_list_last(s, s->id_expression[s->id_expression.size()-1]);
@@ -189,8 +189,12 @@ int check_and_clean_types_remaining(struct semantic *s){
 
 int check_and_clean_types_if_while(struct semantic *s){
     if(s->id_expression.size() < 2){
+        if(s->id_expression[0] == "boolean"){
+            s->id_expression.clear();
+            return 1;
+        }
         s->id_expression.clear();
-        return 1;
+        return 0;
     }
 
     if(s->id_expression[0] == s->id_expression[1]){

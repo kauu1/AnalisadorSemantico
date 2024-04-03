@@ -47,7 +47,7 @@ begin
   
    if chave then 
 
-      if chave <> x then {substitua x por chave} 
+      if x then {substitua x por chave} 
  
          z := Test1; {troque "5.0" por "test1" e veja se gera erro "Nome do programa não pode ser usado"}
   
