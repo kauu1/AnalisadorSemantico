@@ -149,10 +149,10 @@ void expression(struct syntactic* synt){
         next(synt);
         simple_expression(synt);
         update_ex_list(&(synt->s_analyser));
-        synt->s_analyser.id_expression.pop_back();
-        synt->s_analyser.id_expression.pop_back();
-        synt->s_analyser.id_expression.push_back("boolean");
-        
+        if(!(synt->s_analyser.if_while_check)){
+            synt->s_analyser.id_expression.pop_back();
+            synt->s_analyser.id_expression.push_back("boolean");
+        }
     }
 }
 
@@ -190,13 +190,20 @@ void command(struct syntactic* synt){
         synt->s_analyser.current_identifier.name = synt->lexical_analyser_results[synt->position].token;
         synt->s_analyser.current_identifier.scope = synt->s_analyser.scope;
 
-        if(!(check_id(&(synt->s_analyser), synt->s_analyser.current_identifier))){
-            std::cerr << "Line "<< synt->lexical_analyser_results[synt->position].line <<" ERRO: undefined identifier " << synt->s_analyser.current_identifier.name << std::endl;
-        }
-        
-
         next(synt);
+
+        if(synt->lexical_analyser_results[synt->position].token.find(";") != std::string::npos){
+
+            if(!(check_id_procedure(&(synt->s_analyser), synt->s_analyser.current_identifier))){
+                std::cerr << "Line "<< synt->lexical_analyser_results[synt->position].line <<" ERRO: undefined procedure " << synt->s_analyser.current_identifier.name << std::endl;
+            }
+        }
+
         if(synt->lexical_analyser_results[synt->position].token.find(":=") != std::string::npos){
+
+            if(!(check_id(&(synt->s_analyser), synt->s_analyser.current_identifier))){
+                std::cerr << "Line "<< synt->lexical_analyser_results[synt->position].line <<" ERRO: undefined identifier " << synt->s_analyser.current_identifier.name << std::endl;
+            }
             push_expression_list(&(synt->s_analyser), synt->s_analyser.current_identifier.name);
             next(synt);
             expression(synt);
@@ -220,11 +227,14 @@ void command(struct syntactic* synt){
         }else if(synt->lexical_analyser_results[synt->position].token.find("(") != std::string::npos){
 
             if(!(check_id_procedure(&(synt->s_analyser), synt->s_analyser.current_identifier))){
-            std::cerr << "Line "<< synt->lexical_analyser_results[synt->position].line <<" ERRO: undefined procedure " << synt->s_analyser.current_identifier.name << std::endl;
-        }
+                std::cerr << "Line "<< synt->lexical_analyser_results[synt->position].line <<" ERRO: undefined procedure " << synt->s_analyser.current_identifier.name << std::endl;
+            }
+
             next(synt);
             expression_list(synt);
-                
+            if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
+                std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
+            }
         }
         
         if(synt->lexical_analyser_results[synt->position].token.find(";") != std::string::npos){
@@ -242,12 +252,11 @@ void command(struct syntactic* synt){
     }
 
     if(synt->lexical_analyser_results[synt->position].token.find("if") != std::string::npos){
+        synt->s_analyser.if_while_check = 1;
         next(synt);
         expression(synt);
-        if(synt->s_analyser.id_expression[0] != "boolean"){
-            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible type" << std::endl;
-        }
-        if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
+
+        if(!(check_and_clean_types_if_while(&(synt->s_analyser)))){
             std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
         }
 
@@ -258,6 +267,7 @@ void command(struct syntactic* synt){
             std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \"then\"\n";
         }
 
+        synt->s_analyser.if_while_check = 0;
         command(synt);
 
         if(synt->lexical_analyser_results[synt->position].token.find("else") != std::string::npos){
@@ -268,23 +278,24 @@ void command(struct syntactic* synt){
     }
 
     if(synt->lexical_analyser_results[synt->position].token.find("while") != std::string::npos){
+
+        synt->s_analyser.if_while_check = 1;
+
         next(synt);
         expression(synt);
 
-        if(synt->s_analyser.id_expression[0] != "boolean"){
-            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible type" << std::endl;
-        }
-        if(!(check_and_clean_types_remaining(&(synt->s_analyser)))){
+        if(!(check_and_clean_types_if_while(&(synt->s_analyser)))){
             std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
         }
 
-        if(synt->lexical_analyser_results[synt->position].token.find("do") != std::string::npos){}
+        if(synt->lexical_analyser_results[synt->position].token.find("do") != std::string::npos){
+            next(synt);
+        }
         else{
             synt->errors++;
             std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \"do\"\n";
         }
-
-        next(synt);
+        synt->s_analyser.if_while_check = 0;
         command(synt);
     }
 }

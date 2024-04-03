@@ -13,6 +13,7 @@ struct semantic{
     std::vector<struct identifier> identifier_list;
     std::vector<std::string> id_expression;
     struct identifier current_identifier;
+    int if_while_check = 0;
     int scope = 0;
 };
 
@@ -35,6 +36,8 @@ void update_ex_list(struct semantic *s);
 void update_ex_list_last(struct semantic *s, std::string resultType);
 
 int check_and_clean_types_remaining(struct semantic *s);
+
+int check_and_clean_types_if_while(struct semantic *s);
 
 void erase_marks(struct semantic *s);
 
