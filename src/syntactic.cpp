@@ -152,6 +152,10 @@ void expression(struct syntactic* synt){
         if(!(synt->s_analyser.if_while_check)){
             synt->s_analyser.id_expression.pop_back();
             synt->s_analyser.id_expression.push_back("boolean");
+        }else{
+            synt->s_analyser.id_expression.pop_back();
+            synt->s_analyser.id_expression.pop_back();
+            synt->s_analyser.id_expression.push_back("boolean");
         }
     }
 }
@@ -257,7 +261,7 @@ void command(struct syntactic* synt){
         expression(synt);
 
         if(!(check_and_clean_types_if_while(&(synt->s_analyser)))){
-            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
+            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " and " << synt->s_analyser.id_expression[1] << std::endl;
         }
 
         if(synt->lexical_analyser_results[synt->position].token.find("then") != std::string::npos){
@@ -285,7 +289,7 @@ void command(struct syntactic* synt){
         expression(synt);
 
         if(!(check_and_clean_types_if_while(&(synt->s_analyser)))){
-            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " := " << synt->s_analyser.id_expression[1] << std::endl;
+            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line <<" ERRO: incompatible types " << synt->s_analyser.id_expression[0] << " and " << synt->s_analyser.id_expression[1] << std::endl;
         }
 
         if(synt->lexical_analyser_results[synt->position].token.find("do") != std::string::npos){

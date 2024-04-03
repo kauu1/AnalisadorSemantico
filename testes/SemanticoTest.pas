@@ -15,7 +15,6 @@ var			{Existem diversos erros que podem ser gerados neste arquivo. Alguns exempl
   begin
    LimparTela;
    oioi;
-   a := b;
   end;	
   begin			
    oioi;
@@ -29,7 +28,6 @@ var			{Existem diversos erros que podem ser gerados neste arquivo. Alguns exempl
   begin
 
      resultado := 0;
-      oioi;
      {LimparTela; adicione este procedimento}
       while (input>0) do {no lugar de "entrada" use "input" e veja se gera o erro "variável não declarada" }
       resultado := resultado + entrada;
@@ -43,13 +41,13 @@ begin
    LimparTela;
    
    Somatorio(a);
-   a := y + z * (5.5 - c) / 2.567 ; {troque "x" por "a" e veja se gera o erro "tipos incompatíveis"}
+   chave := y + z * (5.5 - chave + c) / 2.567 > 2; {troque "x" por "a" e veja se gera o erro "tipos incompatíveis"}
   
    if chave then 
 
-      if x then {substitua x por chave} 
+      if (x<>2) or x then {substitua x por chave} 
  
-         z := Test1; {troque "5.0" por "test1" e veja se gera erro "Nome do programa não pode ser usado"}
+         z := 5.0; {troque "5.0" por "test1" e veja se gera erro "Nome do programa não pode ser usado"}
   
       else
    

@@ -155,7 +155,8 @@ void update_ex_list(struct semantic *s){
             update_ex_list_last(s, s->id_expression[s->id_expression.size()-1]);
 
         }else{
-            std::cerr << "ERRO: incompatible types" << std::endl;
+            std::cerr << "ERRO: incompatible types operation "<< s->id_expression[s->id_expression.size()-1] << " and " << s->id_expression[s->id_expression.size()-2] << std::endl;
+            s->id_expression.pop_back();
             break;
         }
     }
