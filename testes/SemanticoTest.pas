@@ -43,7 +43,7 @@ begin
    LimparTela;
    
    Somatorio(a);
-   x := (y + z * (5.5 - c) / 2.567) > 2+1; {troque "x" por "a" e veja se gera o erro "tipos incompatíveis"}
+   a := y + z * (5.5 - c) / 2.567 ; {troque "x" por "a" e veja se gera o erro "tipos incompatíveis"}
   
    if chave then 
 
